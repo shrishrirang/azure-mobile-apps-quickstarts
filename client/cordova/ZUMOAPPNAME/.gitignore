@@ -1,2 +1,3 @@
-platforms/
-plugins/
+﻿# .gitignore
+[Pp]lugins/
+[Pp]latforms/
