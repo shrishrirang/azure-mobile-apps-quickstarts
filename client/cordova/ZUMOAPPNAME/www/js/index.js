@@ -26,15 +26,17 @@ define(['./tableManager', './uiManager'], function(tableManager, uiManager) {
      * Event Handler, called when the host is ready
      */
     function onDeviceReady() {
-        // Start by pulling data from the server, displaying it in the UI and then installing event handlers 
-        tableManager
-            .pull()
-            .then(function() {
-                return uiManager.displayItems();
-            })
-            .then(function() {
-                return uiManager.installHandlers();
-            });
+        uiManager.init();
+
+        // Display the items we have locally, pull new data and then display the items again
+        return uiManager
+                    .displayItems()
+                    .then(function() {
+                        return tableManager.pull();
+                    })
+                    .then(function() {
+                        return uiManager.displayItems();
+                    });
     }
 });
 

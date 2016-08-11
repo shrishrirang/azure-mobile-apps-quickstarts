@@ -2,20 +2,79 @@
  * Module for the UI controller logic
  */
 
-define(['./tableManager'], function(tableManager) {
+define(['./lib/es6-promise', './tableManager'], function(es6, tableManager) {
 
-    return {
+    var result = 'server', // default radio button selection
+        api;
+
+    api = {
         displayItems: displayItems,
-        installHandlers: installHandlers
+        init: init,
+        resolve: resolve
     };
 
+    return api;
+
     /**
-     * Installs UI handlers
+     * Init
      */
-    function installHandlers() {
+    function init() {
         // Wire up the UI Event Handler for the Add Item
         $('#add-item').submit(addItemHandler);
         $('#refresh').on('click', refreshData);
+
+        return tableManager.setUiManager(api);
+    }
+
+    function resolve(serverRecord, clientRecord) {
+        $('#server').on('click', function() { // resolve using server value
+            $('#custominput').val('');
+            $('#custominput').hide();
+            result = 'server';
+        });
+        $('#client').on('click', function() { // resolve using custom value
+            $('#custominput').val('');
+            $('#custominput').hide();
+            result = 'client';
+        });
+        $('#skip').on('click', function() { // skip conflict resolution for this record
+            $('#custominput').val('');
+            $('#custominput').hide();
+            result = 'skip';
+        });
+        $('#custom').on('click', function() { // resolve using a custom user specified value
+            var value = JSON.parse(JSON.stringify(clientRecord));
+            delete value.id;
+            delete value.deleted;
+            delete value.version;
+            result = undefined;
+
+            $('#custominput').show();
+            $('#custominput').val(JSON.stringify(value));
+        });
+
+        return new es6.Promise(showConflictDialog);
+    }
+
+    // popup the conflict resolution dialog
+    function showConflictDialog(resolve, reject) {
+        $('#dialog').show();
+        $("#dialog").dialog({
+            modal: true,
+            resizable: true,
+            close: function() {
+                try {
+                    if (result === undefined) {
+                        result = JSON.parse($('#custominput').val());
+                    }
+
+                    resolve(result);
+                } catch(error) {
+                    window.alert('Invalid conflict resolution');
+                    showConflictDialog(resolve ,reject);
+                }
+            }
+        });
     }
 
     /**

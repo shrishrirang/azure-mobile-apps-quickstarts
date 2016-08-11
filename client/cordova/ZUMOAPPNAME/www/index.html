@@ -20,10 +20,11 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: ZUMOAPPURL; style-src 'self'; media-src *">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://shrirs-offline-dotnet.azurewebsites.net; style-src 'self'; media-src *">
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="width=device-width, user-scalable=no" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui.css" />
         <title>Todo list: ZUMOAPPNAME</title>
     </head>
     <body>
@@ -48,8 +49,23 @@
                 <ul id='errorlog'></ul>
             </footer>
         </div>
+
+        
         <script type="text/javascript" src="cordova.js"></script>
         <script data-main="js/index.js" src="js/lib/require.js"></script>
         <script type="text/javascript" src="js/lib/jquery.js"></script>
+        <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
+
+        <div id="dialog" hidden="hidden" title="Conflict handler">
+            <form>
+                <input type="radio" name="conflict" id="server" checked> Use server value <br>
+                <input type="radio" name="conflict" id="client" > Use client value <br>
+                <input type="radio" name="conflict" id="custom" > Define custom value <br>
+                <input id="custominput" hidden="hidden" type="text" name="custominput">
+                <input type="radio" name="conflict" id="skip" > Skip conflict resolution
+            </form>
+        </div>
     </body>
+
+
 </html>
